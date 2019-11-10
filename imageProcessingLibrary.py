@@ -18,6 +18,7 @@ Notes:
 import numpy as np
 import cv2
 from matplotlib import pyplot as plt
+from math import pi
 
 # Note [5]
 def readImg(imgFile):
@@ -78,13 +79,13 @@ def mySubtract(img1, img2):
 
 
 def myBinary(threshhold, grayScaleImg):
-    l,w,z = np.shape(img)
+    l,w,z = np.shape(grayScaleImg)
     emptyarr = np.zeros((l,w,3), dtype = 'uint8')
     
     for i in range(l):
         for j in range(w):
             # passed img is grayscale, intensity values of all three matiricies are the same.
-            if img[i][j][0] > threshhold:
+            if grayScaleImg[i][j][0] > threshhold:
                 emptyarr[i][j][0] = 255
     
     gray = emptyarr[:,:,0]
@@ -97,14 +98,15 @@ def createNDVI(RedMatrix, NIRMatrix):
     return ((NIRMatrix - RedMatrix) / (NIRMatrix + RedMatrix))
 
 # Note [4]
+# Currently broken
 def myCreateColorNDVI(NDVIMatrix):
     # Note [1]
-    NDVIRed = (abs(np.sin(NDVI*2*pi))*255).astype('uint8')
+    NDVIRed = (abs(np.sin(NDVIMatrix*2*pi))*255).astype('uint8')
     # shift blue by pi over 3
-    NDVIBlue = (abs(np.sin(NDVI*2*pi + (pi/3)))*255).astype('uint8')
+    NDVIBlue = (abs(np.sin(NDVIMatrix*2*pi + (pi/3)))*255).astype('uint8')
     # shift by 2pi over 3
-    NDVIGreen = (abs(np.sin(NDVI*2*pi + (2*pi/3)))*255).astype('uint8')    
-    return myCreateImg((NDVIRed,NDVIGreen,NDVIBlue))
+    NDVIGreen = (abs(np.sin(NDVIMatrix*2*pi + (2*pi/3)))*255).astype('uint8')    
+    return myCreateImg(NDVIRed,NDVIGreen,NDVIBlue)
 
 
 def myShowEachColorMatrix(Matrix):
