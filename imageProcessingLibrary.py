@@ -6,6 +6,8 @@ Notes:
     [3] myCreateImg takes input chanenels of r,g,b (in that order) and plugs them into their proper place. Useful for creating false color images
     where, for example, NIR may be subsituted for red.
     [4] NDVI Matrix is a single matrix where all elements range between -1 and 1. Do not insert an image.
+    [5] Need to rearrange color matrices when working with both cv2 and pyplot (one is rgb, the other bgr)
+
 
     General notes:
         You will notice that all color matricies are cast to be unsigned 8 bit integers. This is required when showing an image using myShowImg.
@@ -17,6 +19,12 @@ import numpy as np
 import cv2
 from matplotlib import pyplot as plt
 
+# Note [5]
+def readImg(imgFile):
+    img = cv2.imread(imgFile)
+    r,g,b, = returnColors(img)
+    return myCreateImg(r,g,b)
+
 def myShowImg(title,matrix):
     plt.title(title)
     plt.imshow(matrix)
@@ -24,9 +32,9 @@ def myShowImg(title,matrix):
     return
 
 # Note [2]
-def myMakeHist(arr):
+def myMakeHist(oneDArr):
     hist = np.zeros(256, int)
-    for i in arr:
+    for i in oneDArr:
         for j in i:
             hist[j] += 1
     return hist
@@ -113,3 +121,14 @@ def myShowEachColorMatrix(Matrix):
     #show the blue in a pic
     bb = myCreateImg(blackarr,blackarr,b)
     myShowImg("Blue",bb)
+
+def imageNegative(img):
+    r,g,b = returnColors(img)
+    xSize, ySize, zSize = np.shape(img) 
+    whiteArr = np.full((xSize,ySize),255, 'uint8')
+    negR = (whiteArr-r).astype('uint8')
+    negB = (whiteArr-b).astype('uint8')
+    negG = (whiteArr-g).astype('uint8')
+
+    return myCreateImg(negR,negG,negB)
+
