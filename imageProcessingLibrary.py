@@ -18,7 +18,7 @@ Notes:
 import numpy as np
 import cv2
 from matplotlib import pyplot as plt
-from math import pi
+import math
 
 # Note [5]
 def readImg(imgFile):
@@ -134,3 +134,26 @@ def imageNegative(img):
 
     return myCreateImg(negR,negG,negB)
 
+def _findMax(img):
+    max = -math.inf
+    for x in img:
+            for y in x:
+                for z in y:
+                    if z > max:
+                        max = z
+    return max
+
+
+def logTransformation(img):
+    
+    # add 1 to all enteries to prevent a divide by zero error
+    img +=1
+    # take the log of all elements
+    img = np.log(img)
+    # find the max value... 
+    maxVal = _findMax(img)
+    # ...and use that as the scale
+    returnImg = (img * (255/maxVal)).astype("uint8")
+    # print(img)
+
+    return returnImg
