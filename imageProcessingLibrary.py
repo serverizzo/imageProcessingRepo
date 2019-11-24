@@ -145,7 +145,6 @@ def _findMax(img):
 
 
 def logTransformation(img):
-    
     # add 1 to all enteries to prevent a divide by zero error
     img +=1
     # take the log of all elements
